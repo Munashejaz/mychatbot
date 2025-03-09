@@ -1,20 +1,23 @@
 import openai
+import os
+from dotenv import load_dotenv
 
-# Set up your OpenAI API key (Replace with your actual key)
-API_KEY = "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"
+# Load environment variables from the .env file
+load_dotenv()
 
-# Create the OpenAI client with the API key
-client = openai.OpenAI(api_key=API_KEY)
+# Set the OpenAI API key from the environment variable
+openai.api_key = os.environ.get("OPENAI_API_KEY")
 
 def chat_with_gpt(prompt):
-    response = client.chat.completions.create(
+    response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[{"role": "user", "content": prompt}]
     )
-    return response.choices[0].message.content
+    return response["choices"][0]["message"]["content"]
 
 # Simple chat loop
-print("Welcome to your chatbot! Type 'exit' to quit.")
+print("Welcome to your Chatbox! Type 'exit' to quit.")
+
 while True:
     user_input = input("You: ")
     if user_input.lower() == "exit":

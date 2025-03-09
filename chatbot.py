@@ -1,22 +1,26 @@
 import openai
-import streamlit as st
+import os
+from dotenv import load_dotenv
 
-# Set your OpenAI API key
-openai.api_key = "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"
+# Load environment variables from the .env file
+load_dotenv()
 
-st.title("?? AI Chatbot")
-st.write("Ask me anything!")
+# Set the OpenAI API key from the environment variable
+openai.api_key = os.environ.get("OPENAI_API_KEY")
 
-# User input
-user_input = st.text_input("You:")
+def chat_with_gpt(prompt):
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[{"role": "user", "content": prompt}],
+    )
+    return response["choices"][0]["message"]["content"]
 
-if st.button("Send"):
-    if user_input:
-        try:
-            response = openai.ChatCompletion.create(
-                model="gpt-3.5-turbo",
-                messages=[{"role": "user", "content": user_input}],
-            )
-            st.text_area("AI:", response["choices"][0]["message"]["content"], height=150)
-        except Exception as e:
-            st.error(f"Error: {e}")
+print("Welcome to your Chatbox! Type 'exit' to quit.")
+
+while True:
+    user_input = input("You: ")
+    if user_input.lower() == "exit":
+        print("Goodbye!")
+        break
+    response = chat_with_gpt(user_input)
+    print("Chatbot:", response)
